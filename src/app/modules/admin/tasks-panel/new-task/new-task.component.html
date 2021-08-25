@@ -1,0 +1,80 @@
+<form
+    class="
+        flex flex-col
+        mt-8
+        p-8
+        pb-4
+        bg-card
+        rounded-2xl
+        overflow-hidden
+        w-full
+    "
+>
+    <div class="flex flex-col gt-xs:flex-row">
+        <mat-form-field
+            [ngClass]="formFieldHelpers"
+            class="flex-auto gt-xs:pr-3"
+        >
+            <mat-label>Име на задача</mat-label>
+            <input matInput />
+        </mat-form-field>
+        <mat-form-field
+            [ngClass]="formFieldHelpers"
+            class="flex-auto gt-xs:pr-3"
+        >
+            <mat-label>Клиент</mat-label>
+            <mat-select>
+                <mat-option value="1">1</mat-option>
+                <mat-option value="2">2</mat-option>
+                <mat-option value="3">3</mat-option>
+            </mat-select>
+            <mat-icon
+                class="icon-size-5"
+                matPrefix
+                [svgIcon]="'heroicons_solid:user'"
+            ></mat-icon>
+        </mat-form-field>
+    </div>
+    <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+        <mat-label>Категорија</mat-label>
+        <mat-select>
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+            <mat-option value="3">3</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div class="flex flex-col gt-md:flex-row">
+        <mat-form-field
+            [ngClass]="formFieldHelpers"
+            class="flex-auto gt-xs:pr-3"
+        >
+            <mat-label>Приоритет</mat-label>
+            <mat-select>
+                <mat-option value="1">1</mat-option>
+                <mat-option value="2">2</mat-option>
+                <mat-option value="3">3</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field
+            [ngClass]="formFieldHelpers"
+            class="flex-auto gt-xs:pr-3"
+        >
+            <mat-label>Статус</mat-label>
+            <mat-select>
+                <mat-option value="1">1</mat-option>
+                <mat-option value="2">2</mat-option>
+                <mat-option value="3">3</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="flex">
+            <mat-form-field
+                [ngClass]="formFieldHelpers"
+                class="fuse-mat-textarea flex-auto"
+            >
+                <mat-label>Опис</mat-label>
+                <textarea matInput></textarea>
+            </mat-form-field>
+        </div>
+    </div>
+</form>
