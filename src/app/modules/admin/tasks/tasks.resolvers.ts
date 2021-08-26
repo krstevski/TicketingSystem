@@ -10,6 +10,7 @@ import { catchError } from 'rxjs/operators';
 import { TasksService } from 'app/modules/admin/tasks/tasks.service';
 import {
     Category,
+    Client,
     Partner,
     Tag,
     Task,
@@ -189,5 +190,32 @@ export class TasksWorkHoursResolver implements Resolve<any> {
         state: RouterStateSnapshot
     ): Observable<number[]> {
         return this._tasksService.getWorkHours();
+    }
+}
+
+@Injectable({
+    providedIn: 'root',
+})
+export class TasksClientResolver implements Resolve<any> {
+    /**
+     * Constructor
+     */
+    constructor(private _tasksService: TasksService) {}
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<Client[]> {
+        return this._tasksService.getClients();
     }
 }

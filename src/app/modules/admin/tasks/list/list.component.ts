@@ -24,6 +24,7 @@ import {
     Partner,
     Tag,
     Task,
+    Client,
 } from 'app/modules/admin/tasks/tasks.types';
 import { TasksService } from 'app/modules/admin/tasks/tasks.service';
 
@@ -42,6 +43,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     partners: Partner[];
     categories: Category[];
     workHours: number[];
+    clients: Client[];
     tasks: Task[];
     tasksCount: any = {
         completed: 0,
@@ -66,18 +68,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
-        // Get the tags
         this._tasksService.tags$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((tags: Tag[]) => {
                 this.tags = tags;
-
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
@@ -85,8 +80,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((partners: Partner[]) => {
                 this.partners = partners;
-
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
@@ -94,8 +87,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((categories: Category[]) => {
                 this.categories = categories;
-
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
@@ -103,8 +94,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((workHours: number[]) => {
                 this.workHours = workHours;
+                this._changeDetectorRef.markForCheck();
+            });
 
-                // Mark for check
+        this._tasksService.clients$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((clients: Client[]) => {
+                this.clients = clients;
                 this._changeDetectorRef.markForCheck();
             });
 

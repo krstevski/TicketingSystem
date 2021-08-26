@@ -15,6 +15,11 @@ export interface Partner {
     role?: string;
 }
 
+export interface Client {
+    id?: number;
+    name?: string;
+}
+
 export interface Task {
     id: string;
     type: 'task' | 'section';
@@ -27,5 +32,6 @@ export interface Task {
     partners: number[];
     categories: number[];
     workHours: number;
+    client: number;
     order: number;
 }

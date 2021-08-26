@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import {
     Category,
+    Client,
     Partner,
     Tag,
     Task,
@@ -16,6 +17,9 @@ export class TasksService {
     // Private
     private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
     private partners: BehaviorSubject<Partner[] | null> = new BehaviorSubject(
+        null
+    );
+    private clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(
         null
     );
     private categories: BehaviorSubject<Category[] | null> =
@@ -52,6 +56,10 @@ export class TasksService {
 
     get workHours$(): Observable<number[]> {
         return this.workHours.asObservable();
+    }
+
+    get clients$(): Observable<Client[]> {
+        return this.clients.asObservable();
     }
 
     /**
@@ -105,6 +113,14 @@ export class TasksService {
         return this._httpClient.get<number[]>('api/apps/tasks/workhours').pipe(
             tap((response: any) => {
                 this.workHours.next(response);
+            })
+        );
+    }
+
+    getClients(): Observable<Client[]> {
+        return this._httpClient.get<Client[]>('api/apps/tasks/clients').pipe(
+            tap((response: any) => {
+                this.clients.next(response);
             })
         );
     }
@@ -163,6 +179,22 @@ export class TasksService {
 
                             // Return new partner from observable
                             return newCategory;
+                        })
+                    )
+            )
+        );
+    }
+
+    createClient(client: Client): Observable<Client> {
+        return this.clients$.pipe(
+            take(1),
+            switchMap((clients) =>
+                this._httpClient
+                    .post<Client>('api/apps/tasks/client', { client })
+                    .pipe(
+                        map((newClient) => {
+                            this.clients.next([...clients, newClient]);
+                            return newClient;
                         })
                     )
             )
@@ -259,6 +291,36 @@ export class TasksService {
 
                             // Return the updated partner
                             return updatedCategory;
+                        })
+                    )
+            )
+        );
+    }
+
+    updateClient(id: number, client: Client): Observable<Client> {
+        return this.clients$.pipe(
+            take(1),
+            switchMap((clients) =>
+                this._httpClient
+                    .patch<Client>('api/apps/tasks/client', {
+                        id,
+                        client,
+                    })
+                    .pipe(
+                        map((updatedClient) => {
+                            // Find the index of the updated partner
+                            const index = clients.findIndex(
+                                (item) => item.id === id
+                            );
+
+                            // Update the partner
+                            clients[index] = updatedClient;
+
+                            // Update the clients
+                            this.clients.next(clients);
+
+                            // Return the updated partner
+                            return updatedClient;
                         })
                     )
             )

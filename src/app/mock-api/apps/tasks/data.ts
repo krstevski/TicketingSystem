@@ -43,6 +43,25 @@ export const categories = [
     },
 ];
 
+export const clients = [
+    {
+        id: 1,
+        name: 'Општина Битола',
+    },
+    {
+        id: 2,
+        name: 'Општина Ресен',
+    },
+    {
+        id: 3,
+        name: 'Веро',
+    },
+    {
+        id: 4,
+        name: 'Клиент 4',
+    },
+];
+
 export const members = [
     {
         id: '65f1c421-83c5-4cdf-99da-d97794328679',

@@ -850,20 +850,20 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="mt-8">
-            <mat-form-field appearance="fill">
+        <div class="mt-6">
+            <mat-form-field class="w-full" appearance="fill">
                 <mat-label>Клиент</mat-label>
-                <mat-select [formControlName]="'workHours'">
+                <mat-select [formControlName]="'client'">
                     <mat-option
-                        *ngFor="let number of workHours"
-                        [value]="number"
+                        *ngFor="let client of clients"
+                        [value]="client.id"
                     >
-                        {{ number }}
+                        {{ client.name }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="mt-8">
+        <div class="mt-6">
             <button mat-flat-button [color]="'primary'" class="mr-1 mb-1">
                 Прикачи слика
             </button>

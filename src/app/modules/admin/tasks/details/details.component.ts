@@ -27,6 +27,7 @@ import {
     Partner,
     Tag,
     Task,
+    Client,
 } from 'app/modules/admin/tasks/tasks.types';
 import { TasksListComponent } from 'app/modules/admin/tasks/list/list.component';
 import { TasksService } from 'app/modules/admin/tasks/tasks.service';
@@ -56,6 +57,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     filteredTags: Tag[];
     filteredPartners: Partner[];
     filteredCategories: Category[];
+    clients: Client[];
     task: Task;
     taskForm: FormGroup;
     tasks: Task[];
@@ -105,6 +107,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             tags: [[]],
             partners: [[]],
             categories: [[]],
+            client: [0],
             order: [0],
             workHours: [0],
         });
@@ -135,8 +138,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((categories: Category[]) => {
                 this.categories = categories;
                 this.filteredCategories = categories;
-
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
@@ -144,7 +145,13 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((workHours: number[]) => {
                 this.workHours = workHours;
+                this._changeDetectorRef.markForCheck();
+            });
 
+        this._tasksService.clients$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((clients: Client[]) => {
+                this.clients = clients;
                 this._changeDetectorRef.markForCheck();
             });
 

@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <!-- Actions -->
-                    <div class="mt-4 sm:mt-0">
+                    <div class="mt-4">
                         <!-- Add section button -->
                         <button
                             mat-flat-button
@@ -68,7 +68,7 @@
                         </button>
                         <!-- Add task button -->
                         <button
-                            class="ml-3"
+                            class="sm:ml-0 mt-1 md:mt-0 md:ml-3"
                             mat-flat-button
                             [color]="'primary'"
                             (click)="createTask('task')"
@@ -77,7 +77,9 @@
                             <mat-icon
                                 [svgIcon]="'heroicons_outline:plus'"
                             ></mat-icon>
-                            <span class="ml-2 mr-1">Нова задача</span>
+                            <span class="ml-2 mr-1 sm:ml-0 sm:mr-0"
+                                >Нова задача</span
+                            >
                         </button>
                     </div>
                 </div>
