@@ -382,6 +382,7 @@ export class TasksMockApi {
                     tags: [],
                     partners: [],
                     categories: [],
+                    workHours: 0,
                     order: 0,
                 };
 

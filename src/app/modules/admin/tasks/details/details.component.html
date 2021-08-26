@@ -19,9 +19,7 @@
                         <mat-icon
                             [svgIcon]="'heroicons_outline:check-circle'"
                         ></mat-icon>
-                        <span class="ml-2 font-semibold"
-                            >ОБЕЛЕЖИ КАКО ЗАВРШЕНА</span
-                        >
+                        <span class="ml-2 font-semibold">ОБЕЛЕЖИ ЗАВРШЕНА</span>
                     </div>
                 </ng-container>
 
@@ -33,7 +31,7 @@
                             [svgIcon]="'heroicons_outline:check-circle'"
                         ></mat-icon>
                         <span class="ml-2 font-semibold"
-                            >ОБЕЛЕЖИ КАКО НЕЗАВРШЕНА</span
+                            >ОБЕЛЕЖИ НЕЗАВРШЕНА</span
                         >
                     </div>
                 </ng-container>
@@ -852,7 +850,19 @@
                 </mat-select>
             </mat-form-field>
         </div>
-
+        <div class="mt-8">
+            <mat-form-field appearance="fill">
+                <mat-label>Клиент</mat-label>
+                <mat-select [formControlName]="'workHours'">
+                    <mat-option
+                        *ngFor="let number of workHours"
+                        [value]="number"
+                    >
+                        {{ number }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
         <div class="mt-8">
             <button mat-flat-button [color]="'primary'" class="mr-1 mb-1">
                 Прикачи слика
