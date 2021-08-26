@@ -26,5 +26,6 @@ export interface Task {
     tags: string[];
     partners: number[];
     categories: number[];
+    workHours: number;
     order: number;
 }

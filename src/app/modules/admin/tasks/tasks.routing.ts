@@ -6,6 +6,7 @@ import {
     TasksTaskResolver,
     TasksPartnersResolver,
     TasksCategoriesResolver,
+    TasksWorkHoursResolver,
 } from 'app/modules/admin/tasks/tasks.resolvers';
 import { TasksComponent } from 'app/modules/admin/tasks/tasks.component';
 import { TasksListComponent } from 'app/modules/admin/tasks/list/list.component';
@@ -19,6 +20,7 @@ export const tasksRoutes: Route[] = [
             tags: TasksTagsResolver,
             partners: TasksPartnersResolver,
             categories: TasksCategoriesResolver,
+            workHours: TasksWorkHoursResolver,
         },
         children: [
             {

@@ -20,7 +20,9 @@ export class TasksService {
     );
     private categories: BehaviorSubject<Category[] | null> =
         new BehaviorSubject(null);
-
+    private workHours: BehaviorSubject<number[] | null> = new BehaviorSubject(
+        null
+    );
     private _task: BehaviorSubject<Task | null> = new BehaviorSubject(null);
     private _tasks: BehaviorSubject<Task[] | null> = new BehaviorSubject(null);
 
@@ -46,6 +48,10 @@ export class TasksService {
 
     get categories$(): Observable<Category[]> {
         return this.categories.asObservable();
+    }
+
+    get workHours$(): Observable<number[]> {
+        return this.workHours.asObservable();
     }
 
     /**
@@ -93,6 +99,14 @@ export class TasksService {
                     this.categories.next(response);
                 })
             );
+    }
+
+    getWorkHours(): Observable<number[]> {
+        return this._httpClient.get<number[]>('api/apps/tasks/workhours').pipe(
+            tap((response: any) => {
+                this.workHours.next(response);
+            })
+        );
     }
 
     /**

@@ -838,6 +838,47 @@
                 </div>
             </div>
         </div>
+
+        <div class="mt-8">
+            <mat-form-field appearance="fill">
+                <mat-label>Работни часови</mat-label>
+                <mat-select [formControlName]="'workHours'">
+                    <mat-option
+                        *ngFor="let number of workHours"
+                        [value]="number"
+                    >
+                        {{ number }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="mt-8">
+            <button mat-flat-button [color]="'primary'" class="mr-1 mb-1">
+                Прикачи слика
+            </button>
+            <button mat-flat-button [color]="'primary'" class="mr-1 mb-1">
+                Прегледај слики
+            </button>
+            <button mat-flat-button [color]="'primary'" class="mr-1 mb-1">
+                Прикачи документ
+            </button>
+        </div>
+        <!-- Notes -->
+        <div class="mt-8">
+            <mat-form-field
+                class="fuse-mat-textarea fuse-mat-no-subscript w-full"
+            >
+                <mat-label>Забелешки</mat-label>
+                <textarea
+                    matInput
+                    [formControlName]="'notes'"
+                    [spellcheck]="false"
+                    matTextareaAutosize
+                ></textarea>
+            </mat-form-field>
+        </div>
+
         <div class="mt-8">
             <mat-expansion-panel
                 (opened)="panelOpenState = true"
@@ -852,7 +893,7 @@
                         [color]="'primary'"
                         class="mr-1 mb-1"
                     >
-                        Избери слика
+                        Прикачи слика
                     </button>
                     <button
                         mat-flat-button
@@ -884,23 +925,22 @@
                     </mat-form-field>
                 </div>
 
+                <div class="mb-4">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Работни часови</mat-label>
+                        <mat-select [formControlName]="'workHours'">
+                            <mat-option
+                                *ngFor="let number of workHours"
+                                [value]="number"
+                            >
+                                {{ number }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
                 <p>Test</p>
             </mat-expansion-panel>
-        </div>
-
-        <!-- Notes -->
-        <div class="mt-8">
-            <mat-form-field
-                class="fuse-mat-textarea fuse-mat-no-subscript w-full"
-            >
-                <mat-label>Забелешки</mat-label>
-                <textarea
-                    matInput
-                    [formControlName]="'notes'"
-                    [spellcheck]="false"
-                    matTextareaAutosize
-                ></textarea>
-            </mat-form-field>
         </div>
     </form>
 </div>

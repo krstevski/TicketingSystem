@@ -41,6 +41,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     tags: Tag[];
     partners: Partner[];
     categories: Category[];
+    workHours: number[];
     tasks: Task[];
     tasksCount: any = {
         completed: 0,
@@ -93,6 +94,15 @@ export class TasksListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((categories: Category[]) => {
                 this.categories = categories;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._tasksService.workHours$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((workHours: number[]) => {
+                this.workHours = workHours;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

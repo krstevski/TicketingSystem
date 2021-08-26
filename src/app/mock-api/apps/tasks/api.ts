@@ -7,6 +7,7 @@ import {
     tasks as tasksData,
     partners as partnersData,
     categories as categoriesData,
+    workHours as workHoursData,
 } from 'app/mock-api/apps/tasks/data';
 
 @Injectable({
@@ -17,7 +18,7 @@ export class TasksMockApi {
     private _tasks: any[] = tasksData;
     private partners: any[] = partnersData;
     private categories: any[] = categoriesData;
-
+    private workHours: any[] = workHoursData;
     /**
      * Constructor
      */
@@ -48,6 +49,10 @@ export class TasksMockApi {
         this._fuseMockApiService
             .onGet('api/apps/tasks/categories')
             .reply(() => [200, cloneDeep(this.categories)]);
+
+        this._fuseMockApiService
+            .onGet('api/apps/tasks/workhours')
+            .reply(() => [200, cloneDeep(this.workHours)]);
         // -----------------------------------------------------------------------------------------------------
         // @ Tags - POST
         // -----------------------------------------------------------------------------------------------------

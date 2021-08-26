@@ -164,3 +164,30 @@ export class TasksCategoriesResolver implements Resolve<any> {
         return this._tasksService.getCategories();
     }
 }
+
+@Injectable({
+    providedIn: 'root',
+})
+export class TasksWorkHoursResolver implements Resolve<any> {
+    /**
+     * Constructor
+     */
+    constructor(private _tasksService: TasksService) {}
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<number[]> {
+        return this._tasksService.getWorkHours();
+    }
+}

@@ -59,6 +59,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     task: Task;
     taskForm: FormGroup;
     tasks: Task[];
+    workHours: number[];
     private _tagsPanelOverlayRef: OverlayRef;
     private partnersPanelOverlayRef: OverlayRef;
     private categoriesPanelOverlayRef: OverlayRef;
@@ -105,6 +106,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             partners: [[]],
             categories: [[]],
             order: [0],
+            workHours: [0],
         });
 
         // Get the tags
@@ -135,6 +137,14 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.filteredCategories = categories;
 
                 // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._tasksService.workHours$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((workHours: number[]) => {
+                this.workHours = workHours;
+
                 this._changeDetectorRef.markForCheck();
             });
 
