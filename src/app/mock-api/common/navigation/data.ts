@@ -10,18 +10,26 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link: '/example',
     },
     {
-        id: 'task',
+        id: 'task0',
         title: 'Task',
         type: 'basic',
         icon: 'heroicons_outline:clipboard-list',
         link: '/tasks-panel',
     },
     {
-        id: 'task-alt',
+        id: 'task',
         title: 'Задачи',
         type: 'basic',
         icon: 'heroicons_outline:check-circle',
         link: '/tasks',
+    },
+
+    {
+        id: 'task-alt',
+        title: 'Задачи-alt',
+        type: 'basic',
+        icon: 'heroicons_outline:check-circle',
+        link: '/tasks-alt',
     },
 ];
 export const compactNavigation: FuseNavigationItem[] = [

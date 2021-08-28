@@ -28,9 +28,9 @@ import {
     Tag,
     Task,
     Client,
-} from 'app/modules/admin/tasks/tasks.types';
-import { TasksListComponent } from 'app/modules/admin/tasks/list/list.component';
-import { TasksService } from 'app/modules/admin/tasks/tasks.service';
+} from 'app/modules/admin/tasks-alt/tasks.types';
+import { TasksListComponent } from 'app/modules/admin/tasks-alt/list/list.component';
+import { TasksService } from 'app/modules/admin/tasks-alt/tasks.service';
 
 @Component({
     selector: 'tasks-details',

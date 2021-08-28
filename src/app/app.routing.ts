@@ -141,6 +141,13 @@ export const appRoutes: Route[] = [
                         (m) => m.TasksModule
                     ),
             },
+            {
+                path: 'tasks-alt',
+                loadChildren: () =>
+                    import('app/modules/admin/tasks-alt/tasks.module').then(
+                        (m) => m.TasksModule
+                    ),
+            },
         ],
     },
 ];
