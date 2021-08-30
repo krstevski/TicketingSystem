@@ -82,7 +82,80 @@
                         </button>
                     </div>
                 </div>
-
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Филтри </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="flex flex-col lg:flex-row items-center">
+                        <mat-form-field
+                            class="mr-2 w-3/4 lg:w-1/6"
+                            appearance="fill"
+                        >
+                            <mat-label>Категории</mat-label>
+                            <mat-select [formControlName]="'category'" multiple>
+                                <mat-option
+                                    *ngFor="let category of categories"
+                                    [value]="category.id"
+                                >
+                                    {{ category.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field
+                            class="mr-2 w-3/4 lg:w-1/6"
+                            appearance="fill"
+                        >
+                            <mat-label>Учесници</mat-label>
+                            <mat-select [formControlName]="'partners'" multiple>
+                                <mat-option
+                                    *ngFor="let partner of partners"
+                                    [value]="partner.id"
+                                >
+                                    {{ partner.firstName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field
+                            class="mr-2 w-3/4 lg:w-1/6"
+                            appearance="fill"
+                        >
+                            <mat-label>Приоритет</mat-label>
+                            <mat-select [formControlName]="'priority'">
+                                <mat-option [value]="1">Низок</mat-option>
+                                <mat-option [value]="2">Нормален</mat-option>
+                                <mat-option [value]="3">Висок</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field
+                            class="mr-2 w-3/4 lg:w-1/6"
+                            appearance="fill"
+                        >
+                            <mat-label>Клиент</mat-label>
+                            <mat-select [formControlName]="'clients'">
+                                <mat-option
+                                    *ngFor="let client of clients"
+                                    [value]="client.id"
+                                >
+                                    {{ client.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button
+                            mat-flat-button
+                            class="mr-2 mt-2 w-3/4 lg:w-1/6"
+                            [color]="'primary'"
+                        >
+                            Пребарај
+                        </button>
+                        <button
+                            mat-flat-button
+                            class="mr-2 mt-2 w-3/4 lg:w-1/6"
+                            [color]="'red'"
+                        >
+                            Избриши
+                        </button>
+                    </div>
+                </mat-expansion-panel>
                 <!-- Tasks list -->
                 <ng-container *ngIf="tasks && tasks.length > 0; else noTasks">
                     <div

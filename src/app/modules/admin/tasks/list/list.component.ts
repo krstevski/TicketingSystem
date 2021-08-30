@@ -52,9 +52,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
@@ -104,13 +101,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the tasks
         this._tasksService.tasks$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((tasks: Task[]) => {
                 this.tasks = tasks;
 
-                // Update the counts
                 this.tasksCount.total = this.tasks.filter(
                     (task) => task.type === 'task'
                 ).length;
@@ -120,31 +115,24 @@ export class TasksListComponent implements OnInit, OnDestroy {
                 this.tasksCount.incomplete =
                     this.tasksCount.total - this.tasksCount.completed;
 
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
 
-                // Update the count on the navigation
                 setTimeout(() => {
-                    // Get the component -> navigation data -> item
                     const mainNavigationComponent =
                         this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(
                             'mainNavigation'
                         );
 
-                    // If the main navigation component exists...
                     if (mainNavigationComponent) {
                         const mainNavigation =
                             mainNavigationComponent.navigation;
                         const menuItem = this._fuseNavigationService.getItem(
-                            'apps.tasks',
+                            'task',
                             mainNavigation
                         );
-
-                        // Update the subtitle of the item
                         menuItem.subtitle =
-                            this.tasksCount.incomplete + ' remaining tasks';
+                            this.tasksCount.incomplete + ' преостанати задачи';
 
-                        // Refresh the navigation
                         mainNavigationComponent.refresh();
                     }
                 });
