@@ -150,11 +150,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
                     this.tasksCount.total - this.tasksCount.completed;
 
                 if (this.filters.hideCompleted.getValue()) {
-                    // console.log(
-                    //     'Filtering..... ' +
-                    //         this.filters.hideCompleted.getValue()
-                    // );
-
                     this.filteredTasks = this.filteredTasks.filter(
                         (task) => task.completed == false
                     );
@@ -162,9 +157,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
                 this._changeDetectorRef.markForCheck();
 
-                // Update the count on the navigation
                 setTimeout(() => {
-                    // Get the component -> navigation data -> item
                     const mainNavigationComponent =
                         this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(
                             'mainNavigation'
