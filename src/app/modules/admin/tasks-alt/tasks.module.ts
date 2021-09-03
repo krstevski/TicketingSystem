@@ -26,7 +26,7 @@ import { tasksRoutes } from 'app/modules/admin/tasks-alt/tasks.routing';
 import { TasksComponent } from 'app/modules/admin/tasks-alt/tasks.component';
 import { TasksDetailsComponent } from 'app/modules/admin/tasks-alt/details/details.component';
 import { TasksListComponent } from 'app/modules/admin/tasks-alt/list/list.component';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @NgModule({
     declarations: [TasksComponent, TasksDetailsComponent, TasksListComponent],
     imports: [
@@ -52,6 +52,7 @@ import { TasksListComponent } from 'app/modules/admin/tasks-alt/list/list.compon
         SharedModule,
         MatExpansionModule,
         MatGridListModule,
+        MatSlideToggleModule,
     ],
     providers: [
         {

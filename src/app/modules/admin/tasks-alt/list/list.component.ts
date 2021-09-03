@@ -12,8 +12,13 @@ import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDrawer } from '@angular/material/sidenav';
-import { fromEvent, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
+import {
+    debounceTime,
+    distinctUntilChanged,
+    filter,
+    takeUntil,
+} from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import {
     FuseNavigationService,
@@ -27,6 +32,8 @@ import {
     Client,
 } from 'app/modules/admin/tasks-alt/tasks.types';
 import { TasksService } from 'app/modules/admin/tasks-alt/tasks.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'tasks-list',
@@ -46,12 +53,27 @@ export class TasksListComponent implements OnInit, OnDestroy {
     workHours: number[];
     clients: Client[];
     tasks: Task[];
+    filteredTasks: Task[];
+    filters: {
+        categoryMultiple: BehaviorSubject<number[] | number>;
+        partnerMultiple: BehaviorSubject<number[] | number>;
+        priority: BehaviorSubject<number>;
+        client: BehaviorSubject<number>;
+        hideCompleted: BehaviorSubject<boolean>;
+    } = {
+        categoryMultiple: new BehaviorSubject(0),
+        partnerMultiple: new BehaviorSubject(0),
+        priority: new BehaviorSubject(0),
+        client: new BehaviorSubject(0),
+        hideCompleted: new BehaviorSubject(false),
+    };
     priorities: number[] = [1, 2, 3];
     tasksCount: any = {
         completed: 0,
         incomplete: 0,
         total: 0,
     };
+    filterForm: FormGroup;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -71,6 +93,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
     ngOnInit(): void {
+        this.filterForm = new FormGroup({
+            category: new FormControl(''),
+            partners: new FormControl(''),
+            priority: new FormControl('all'),
+            clients: new FormControl('all'),
+        });
+
         this._tasksService.tags$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((tags: Tag[]) => {
@@ -108,10 +137,10 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
         // Get the tasks
         this._tasksService.tasks$
-            .pipe(takeUntil(this._unsubscribeAll))
+            .pipe(takeUntil(this._unsubscribeAll), debounceTime(500))
             .subscribe((tasks: Task[]) => {
-                this.tasks = tasks;
-
+                this.tasks = this.filteredTasks = tasks;
+                // console.log('Getting all tasks');
                 // Update the counts
                 this.tasksCount.total = this.tasks.filter(
                     (task) => task.type === 'task'
@@ -122,7 +151,17 @@ export class TasksListComponent implements OnInit, OnDestroy {
                 this.tasksCount.incomplete =
                     this.tasksCount.total - this.tasksCount.completed;
 
-                // Mark for check
+                if (this.filters.hideCompleted.getValue()) {
+                    console.log(
+                        'Filtering..... ' +
+                            this.filters.hideCompleted.getValue()
+                    );
+
+                    this.filteredTasks = this.filteredTasks.filter(
+                        (task) => task.completed == false
+                    );
+                }
+
                 this._changeDetectorRef.markForCheck();
 
                 // Update the count on the navigation
@@ -150,6 +189,17 @@ export class TasksListComponent implements OnInit, OnDestroy {
                 });
             });
 
+        combineLatest([this.filters.hideCompleted]).subscribe(
+            ([hideCompleted]) => {
+                this.filteredTasks = this.tasks;
+                if (hideCompleted) {
+                    this.filteredTasks = this.filteredTasks.filter(
+                        (task) => task.completed == false
+                    );
+                }
+                this._changeDetectorRef.markForCheck();
+            }
+        );
         this._tasksService.task$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((task: Task) => {
@@ -197,6 +247,10 @@ export class TasksListComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    filterCompleted(change: MatSlideToggleChange): void {
+        this.filters.hideCompleted.next(change.checked);
+    }
 
     /**
      * On backdrop clicked
@@ -246,6 +300,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
         this._tasksService.updateTasksOrders(event.container.data).subscribe();
         this._changeDetectorRef.markForCheck();
     }
+
+    // TODO: Create filters here
 
     /**
      * Track by function for ngFor loops

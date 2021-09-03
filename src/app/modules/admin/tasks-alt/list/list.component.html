@@ -66,6 +66,14 @@
                             <span class="ml-2 mr-1">Нова секција</span>
                         </button> -->
 
+                        <mat-slide-toggle
+                            class="mb-2 mr-4"
+                            [color]="'primary'"
+                            (change)="filterCompleted($event)"
+                        >
+                            Сокриј завршени задачи
+                        </mat-slide-toggle>
+
                         <button
                             class="sm:ml-0 mt-1 md:mt-0 md:ml-3"
                             mat-flat-button
@@ -86,7 +94,10 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title> Филтри </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div class="flex flex-col lg:flex-row items-center">
+                    <form
+                        [formGroup]="filterForm"
+                        class="flex flex-col lg:flex-row items-center"
+                    >
                         <mat-form-field
                             class="mr-2 w-3/4 lg:w-1/6"
                             appearance="fill"
@@ -121,6 +132,7 @@
                         >
                             <mat-label>Приоритет</mat-label>
                             <mat-select [formControlName]="'priority'">
+                                <mat-option [value]="'all'">Сите</mat-option>
                                 <mat-option [value]="1">Низок</mat-option>
                                 <mat-option [value]="2">Нормален</mat-option>
                                 <mat-option [value]="3">Висок</mat-option>
@@ -132,6 +144,7 @@
                         >
                             <mat-label>Клиент</mat-label>
                             <mat-select [formControlName]="'clients'">
+                                <mat-option [value]="'all'">Сите</mat-option>
                                 <mat-option
                                     *ngFor="let client of clients"
                                     [value]="client.id"
@@ -154,10 +167,15 @@
                         >
                             Избриши
                         </button>
-                    </div>
+                    </form>
                 </mat-expansion-panel>
                 <!-- Tasks list -->
-                <ng-container *ngIf="tasks && tasks.length > 0; else noTasks">
+                <ng-container
+                    *ngIf="
+                        filteredTasks && filteredTasks.length > 0;
+                        else noTasks
+                    "
+                >
                     <div
                         class="divide-y"
                         cdkDropList
@@ -167,7 +185,7 @@
                         <!-- Task -->
                         <ng-container
                             *ngFor="
-                                let task of tasks;
+                                let task of filteredTasks;
                                 let first = first;
                                 trackBy: trackByFn
                             "
@@ -378,7 +396,7 @@
                                 text-secondary
                             "
                         >
-                            Add a task to start planning!
+                            Нема задачи!
                         </div>
                     </div>
                 </ng-template>

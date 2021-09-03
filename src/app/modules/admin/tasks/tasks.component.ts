@@ -11,8 +11,5 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksComponent {
-    /**
-     * Constructor
-     */
     constructor() {}
 }
