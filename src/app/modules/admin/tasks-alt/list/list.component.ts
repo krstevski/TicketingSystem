@@ -140,8 +140,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll), debounceTime(500))
             .subscribe((tasks: Task[]) => {
                 this.tasks = this.filteredTasks = tasks;
-                // console.log('Getting all tasks');
-                // Update the counts
                 this.tasksCount.total = this.tasks.filter(
                     (task) => task.type === 'task'
                 ).length;
@@ -152,10 +150,10 @@ export class TasksListComponent implements OnInit, OnDestroy {
                     this.tasksCount.total - this.tasksCount.completed;
 
                 if (this.filters.hideCompleted.getValue()) {
-                    console.log(
-                        'Filtering..... ' +
-                            this.filters.hideCompleted.getValue()
-                    );
+                    // console.log(
+                    //     'Filtering..... ' +
+                    //         this.filters.hideCompleted.getValue()
+                    // );
 
                     this.filteredTasks = this.filteredTasks.filter(
                         (task) => task.completed == false

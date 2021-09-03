@@ -8,7 +8,7 @@ import { InitialDataResolver } from 'app/app.resolvers';
 // tslint:disable:max-line-length
 export const appRoutes: Route[] = [
     // Redirect empty path to '/example'
-    { path: '', pathMatch: 'full', redirectTo: 'example' },
+    { path: '', pathMatch: 'full', redirectTo: 'tasks-alt' },
 
     // Redirect signed in user to the '/example'
     //
@@ -120,13 +120,6 @@ export const appRoutes: Route[] = [
             initialData: InitialDataResolver,
         },
         children: [
-            {
-                path: 'example',
-                loadChildren: () =>
-                    import('app/modules/admin/example/example.module').then(
-                        (m) => m.ExampleModule
-                    ),
-            },
             {
                 path: 'tasks-panel',
                 loadChildren: () =>
