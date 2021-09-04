@@ -13,12 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDrawer } from '@angular/material/sidenav';
 import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
-import {
-    debounceTime,
-    distinctUntilChanged,
-    filter,
-    takeUntil,
-} from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import {
     FuseNavigationService,
@@ -34,6 +29,7 @@ import {
 import { TasksService } from 'app/modules/admin/tasks-alt/tasks.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
     selector: 'tasks-list',
@@ -55,16 +51,16 @@ export class TasksListComponent implements OnInit, OnDestroy {
     tasks: Task[];
     filteredTasks: Task[];
     filters: {
-        categoryMultiple: BehaviorSubject<number[] | number>;
-        partnerMultiple: BehaviorSubject<number[] | number>;
+        categoryMultiple: BehaviorSubject<number[]>;
+        partnerMultiple: BehaviorSubject<number[]>;
         priority: BehaviorSubject<number>;
         client: BehaviorSubject<number>;
         hideCompleted: BehaviorSubject<boolean>;
     } = {
-        categoryMultiple: new BehaviorSubject(0),
-        partnerMultiple: new BehaviorSubject(0),
-        priority: new BehaviorSubject(0),
-        client: new BehaviorSubject(0),
+        categoryMultiple: new BehaviorSubject([]),
+        partnerMultiple: new BehaviorSubject([]),
+        priority: new BehaviorSubject(-1),
+        client: new BehaviorSubject(-1),
         hideCompleted: new BehaviorSubject(false),
     };
     priorities: number[] = [1, 2, 3];
@@ -96,8 +92,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
         this.filterForm = new FormGroup({
             category: new FormControl(''),
             partners: new FormControl(''),
-            priority: new FormControl('all'),
-            clients: new FormControl('all'),
+            priority: new FormControl(-1),
+            clients: new FormControl(-1),
         });
 
         this._tasksService.tags$
@@ -136,61 +132,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
             });
 
         // Get the tasks
-        this._tasksService.tasks$
-            .pipe(takeUntil(this._unsubscribeAll), debounceTime(500))
-            .subscribe((tasks: Task[]) => {
-                this.tasks = this.filteredTasks = tasks;
-                this.tasksCount.total = this.tasks.filter(
-                    (task) => task.type === 'task'
-                ).length;
-                this.tasksCount.completed = this.tasks.filter(
-                    (task) => task.type === 'task' && task.completed
-                ).length;
-                this.tasksCount.incomplete =
-                    this.tasksCount.total - this.tasksCount.completed;
+        this.getTasks();
 
-                if (this.filters.hideCompleted.getValue()) {
-                    this.filteredTasks = this.filteredTasks.filter(
-                        (task) => task.completed == false
-                    );
-                }
-
-                this._changeDetectorRef.markForCheck();
-
-                setTimeout(() => {
-                    const mainNavigationComponent =
-                        this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(
-                            'mainNavigation'
-                        );
-
-                    // If the main navigation component exists...
-                    if (mainNavigationComponent) {
-                        const mainNavigation =
-                            mainNavigationComponent.navigation;
-                        const menuItem = this._fuseNavigationService.getItem(
-                            'task-alt',
-                            mainNavigation
-                        );
-
-                        menuItem.subtitle =
-                            this.tasksCount.incomplete + ' преостанати задачи';
-
-                        mainNavigationComponent.refresh();
-                    }
-                });
-            });
-
-        combineLatest([this.filters.hideCompleted]).subscribe(
-            ([hideCompleted]) => {
-                this.filteredTasks = this.tasks;
-                if (hideCompleted) {
-                    this.filteredTasks = this.filteredTasks.filter(
-                        (task) => task.completed == false
-                    );
-                }
-                this._changeDetectorRef.markForCheck();
-            }
-        );
         this._tasksService.task$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((task: Task) => {
@@ -221,9 +164,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
                     this.createTask('task');
                 }
 
-                if (event.key === '.') {
-                    this.createTask('section');
-                }
+                // if (event.key === '.') {
+                //     this.createTask('section');
+                // }
             });
     }
 
@@ -235,14 +178,189 @@ export class TasksListComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
+    private getTasks(): void {
+        this._tasksService.tasks$
+            .pipe(takeUntil(this._unsubscribeAll), debounceTime(500))
+            .subscribe((tasks: Task[]) => {
+                this.tasks = this.filteredTasks = tasks;
+                this.tasksCount.total = this.tasks.filter(
+                    (task) => task.type === 'task'
+                ).length;
+                this.tasksCount.completed = this.tasks.filter(
+                    (task) => task.type === 'task' && task.completed
+                ).length;
+                this.tasksCount.incomplete =
+                    this.tasksCount.total - this.tasksCount.completed;
+
+                this.reFilterTasks(tasks);
+
+                this._changeDetectorRef.markForCheck();
+
+                setTimeout(() => {
+                    const mainNavigationComponent =
+                        this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(
+                            'mainNavigation'
+                        );
+
+                    // If the main navigation component exists...
+                    if (mainNavigationComponent) {
+                        const mainNavigation =
+                            mainNavigationComponent.navigation;
+                        const menuItem = this._fuseNavigationService.getItem(
+                            'task-alt',
+                            mainNavigation
+                        );
+
+                        menuItem.subtitle =
+                            this.tasksCount.incomplete + ' преостанати задачи';
+
+                        mainNavigationComponent.refresh();
+                    }
+                });
+            });
+
+        combineLatest([
+            this.filters.hideCompleted,
+            this.filters.categoryMultiple,
+            this.filters.partnerMultiple,
+            this.filters.priority,
+            this.filters.client,
+        ]).subscribe(
+            ([
+                hideCompleted,
+                categoryMultiple,
+                partnerMultiple,
+                priority,
+                client,
+            ]) => {
+                if (this.tasks)
+                    this.filteredTasks = this.tasks.filter(
+                        (task) => task.type !== 'section'
+                    );
+
+                if (categoryMultiple.length > 0) {
+                    this.filteredTasks = this.filteredTasks.filter((task) => {
+                        return task.categories.some((category) => {
+                            return categoryMultiple.includes(category);
+                        });
+                    });
+                }
+
+                if (partnerMultiple.length > 0) {
+                    this.filteredTasks = this.filteredTasks.filter((task) => {
+                        return task.partners.some((partner) => {
+                            return partnerMultiple.includes(partner);
+                        });
+                    });
+                }
+
+                if (priority != -1) {
+                    this.filteredTasks = this.filteredTasks.filter(
+                        (task) => task.priority == priority
+                    );
+                }
+
+                if (client != -1) {
+                    this.filteredTasks = this.filteredTasks.filter(
+                        (task) => task.client == client
+                    );
+                }
+
+                if (hideCompleted) {
+                    this.filteredTasks = this.filteredTasks.filter(
+                        (task) => task.completed == false
+                    );
+                }
+            }
+        );
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
     filterCompleted(change: MatSlideToggleChange): void {
         this.filters.hideCompleted.next(change.checked);
+        this._changeDetectorRef.markForCheck();
     }
 
+    filterTasksByCategory(change: MatSelectChange): void {
+        this.filters.categoryMultiple.next(change.value);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    filterTasksByPartner(change: MatSelectChange): void {
+        this.filters.partnerMultiple.next(change.value);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    filterTasksByPriority(change: MatSelectChange): void {
+        this.filters.priority.next(change.value);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    filterTasksByClient(change: MatSelectChange): void {
+        this.filters.client.next(change.value);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    clearFilters(): void {
+        this.filters.categoryMultiple.next([]);
+        this.filters.partnerMultiple.next([]);
+        this.filters.priority.next(-1);
+        this.filters.client.next(-1);
+        this.filterForm.get('category').setValue([]);
+        this.filterForm.get('partners').setValue([]);
+        this.filterForm.get('priority').setValue(-1);
+        this.filterForm.get('clients').setValue(-1);
+        this.getTasks();
+        this._changeDetectorRef.markForCheck();
+    }
+
+    reFilterTasks(tasks: Task[]): void {
+        if (tasks) {
+            this.tasks = tasks.filter((task) => task.type !== 'section');
+            this.filteredTasks = this.tasks;
+        }
+
+        if (this.filters.categoryMultiple.getValue().length > 0) {
+            this.filteredTasks = this.filteredTasks.filter((task) => {
+                return task.categories.some((category) => {
+                    return this.filters.categoryMultiple
+                        .getValue()
+                        .includes(category);
+                });
+            });
+        }
+
+        if (this.filters.partnerMultiple.getValue().length > 0) {
+            this.filteredTasks = this.filteredTasks.filter((task) => {
+                return task.partners.some((partner) => {
+                    return this.filters.partnerMultiple
+                        .getValue()
+                        .includes(partner);
+                });
+            });
+        }
+
+        if (this.filters.priority.getValue() != -1) {
+            this.filteredTasks = this.filteredTasks.filter(
+                (task) => task.priority == this.filters.priority.getValue()
+            );
+        }
+
+        if (this.filters.client.getValue() != -1) {
+            this.filteredTasks = this.filteredTasks.filter(
+                (task) => task.client == this.filters.client.getValue()
+            );
+        }
+
+        if (this.filters.hideCompleted.getValue()) {
+            this.filteredTasks = this.filteredTasks.filter(
+                (task) => task.completed == false
+            );
+        }
+    }
     /**
      * On backdrop clicked
      */

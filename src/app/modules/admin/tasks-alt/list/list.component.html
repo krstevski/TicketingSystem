@@ -103,7 +103,13 @@
                             appearance="fill"
                         >
                             <mat-label>Категории</mat-label>
-                            <mat-select [formControlName]="'category'" multiple>
+                            <mat-select
+                                [formControlName]="'category'"
+                                (selectionChange)="
+                                    filterTasksByCategory($event)
+                                "
+                                multiple
+                            >
                                 <mat-option
                                     *ngFor="let category of categories"
                                     [value]="category.id"
@@ -117,7 +123,11 @@
                             appearance="fill"
                         >
                             <mat-label>Учесници</mat-label>
-                            <mat-select [formControlName]="'partners'" multiple>
+                            <mat-select
+                                [formControlName]="'partners'"
+                                (selectionChange)="filterTasksByPartner($event)"
+                                multiple
+                            >
                                 <mat-option
                                     *ngFor="let partner of partners"
                                     [value]="partner.id"
@@ -131,11 +141,16 @@
                             appearance="fill"
                         >
                             <mat-label>Приоритет</mat-label>
-                            <mat-select [formControlName]="'priority'">
-                                <mat-option [value]="'all'">Сите</mat-option>
-                                <mat-option [value]="1">Низок</mat-option>
-                                <mat-option [value]="2">Нормален</mat-option>
-                                <mat-option [value]="3">Висок</mat-option>
+                            <mat-select
+                                [formControlName]="'priority'"
+                                (selectionChange)="
+                                    filterTasksByPriority($event)
+                                "
+                            >
+                                <mat-option [value]="-1">Сите</mat-option>
+                                <mat-option [value]="0">Низок</mat-option>
+                                <mat-option [value]="1">Нормален</mat-option>
+                                <mat-option [value]="2">Висок</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field
@@ -143,8 +158,11 @@
                             appearance="fill"
                         >
                             <mat-label>Клиент</mat-label>
-                            <mat-select [formControlName]="'clients'">
-                                <mat-option [value]="'all'">Сите</mat-option>
+                            <mat-select
+                                [formControlName]="'clients'"
+                                (selectionChange)="filterTasksByClient($event)"
+                            >
+                                <mat-option [value]="-1">Сите</mat-option>
                                 <mat-option
                                     *ngFor="let client of clients"
                                     [value]="client.id"
@@ -153,19 +171,20 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <button
+                        <!-- <button
                             mat-flat-button
                             class="mr-2 mt-2 w-3/4 lg:w-1/6"
                             [color]="'primary'"
                         >
                             Пребарај
-                        </button>
+                        </button> -->
                         <button
                             mat-flat-button
                             class="mr-2 mt-2 w-3/4 lg:w-1/6"
-                            [color]="'red'"
+                            [color]="'secondary'"
+                            (click)="clearFilters()"
                         >
-                            Избриши
+                            Избриши филтри
                         </button>
                     </form>
                 </mat-expansion-panel>
